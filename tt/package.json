@@ -1,0 +1,8 @@
+{
+  "name": "flavor",
+  "description": "The default implementation of the unified distribution platform API",
+  "version": "0.0.1",
+  "unity": "2022.3",
+  "displayName": "Flavor Default",
+  "dependencies": {}
+}
