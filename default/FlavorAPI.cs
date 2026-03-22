@@ -1,4 +1,4 @@
-using System;
+using Flavor.Core;
 
 namespace Flavor
 {
@@ -6,13 +6,10 @@ namespace Flavor
     {
         public const bool ShareAvailable = false;
 
-        public class ShareInfo
-        {
-            public Action Success;
-            public Action Failure;
-            public Action Cancel;
-        }
-
         public static void ShareAppMessage(ShareInfo info) { }
+
+        public static void ShareAppMessage(ShareInfo info, string eventKey, int eventDim = 0) { }
+
+        public static void ReportEvent(string key, int type, int dim = 0) { }
     }
 }

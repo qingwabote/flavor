@@ -1,10 +1,7 @@
 {
-    "name": "Flavor",
+    "name": "Flavor.Core",
     "rootNamespace": "",
-    "references": [
-        "GUID:c5645d7be1bb5f347b6e4a58d4b7323d",
-        "GUID:5efd170ecd8084500bed5692932fe14e"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
