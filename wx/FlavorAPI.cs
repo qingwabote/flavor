@@ -1,5 +1,6 @@
 using System;
 using Flavor.Core;
+using UnityEngine;
 using WeChatWASM;
 
 namespace Flavor
@@ -8,12 +9,7 @@ namespace Flavor
     {
         public const bool ShareAvailable = true;
 
-        public class ShareInfo
-        {
-            public Action Success;
-            public Action Failure;
-            public Action Cancel;
-        }
+        public const bool HubAvailable = true;
 
         public static void ShareAppMessage(ShareInfo info)
         {
@@ -45,6 +41,32 @@ namespace Flavor
                 branchId = e.ID,
                 eventType = type,
                 branchDim = dim.ToString()
+            });
+        }
+
+        private static WXPageManager s_PageManager;
+
+        public static void OpenHub(string link)
+        {
+            s_PageManager ??= WX.CreatePageManager();
+
+            s_PageManager.Load(new()
+            {
+                openlink = link,
+                success = (res) =>
+                {
+                    s_PageManager.Show(new()
+                    {
+                        fail = (res) =>
+                        {
+                            Debug.LogError($"PageManager: {res.errMsg}");
+                        }
+                    });
+                },
+                fail = (res) =>
+                {
+                    Debug.LogError($"PageManager: {res.errMsg}");
+                }
             });
         }
     }
