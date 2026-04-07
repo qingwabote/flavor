@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Flavor.Core
+namespace Flavor
 {
     [Serializable]
     public struct ReportEvent

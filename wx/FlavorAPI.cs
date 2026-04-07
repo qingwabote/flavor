@@ -1,5 +1,4 @@
 using System;
-using Flavor.Core;
 using UnityEngine;
 using WeChatWASM;
 

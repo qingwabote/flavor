@@ -1,5 +1,3 @@
-using Flavor.Core;
-
 namespace Flavor
 {
     public class FlavorAPI

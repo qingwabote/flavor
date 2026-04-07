@@ -1,6 +1,6 @@
 using System;
 
-namespace Flavor.Core
+namespace Flavor
 {
     public class ShareInfo
     {
