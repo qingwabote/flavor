@@ -47,7 +47,8 @@
                                 getattr: flavor_fs.node_ops.getattr,
                                 lookup: flavor_fs.node_ops.lookup,
                                 setattr: flavor_fs.node_ops.setattr,
-                                mknod: flavor_fs.node_ops.mknod
+                                mknod: flavor_fs.node_ops.mknod,
+                                symlink: flavor_fs.node_ops.symlink
                             },
                             stream: {
                                 llseek: flavor_fs.stream_ops.llseek
@@ -65,6 +66,14 @@
                                 write: flavor_fs.stream_ops.write,
                                 llseek: flavor_fs.stream_ops.llseek
                             }
+                        },
+                        link: {
+                            node: {
+                                getattr: flavor_fs.node_ops.getattr,
+                                setattr: flavor_fs.node_ops.setattr,
+                                readlink: flavor_fs.node_ops.readlink
+                            },
+                            stream: {}
                         }
                     };
                 }
@@ -81,6 +90,10 @@
                     node.stream_ops = flavor_fs.ops_table.file.stream;
                     node.usedBytes = 0;
                     node.fileSize = 0;
+                } else if (FS.isLink(node.mode)) {
+                    node.node_ops = flavor_fs.ops_table.link.node;
+                    node.stream_ops = flavor_fs.ops_table.link.stream;
+                    node.link = null;
                 }
 
                 return node;
@@ -107,7 +120,8 @@
             node_ops: {
                 getattr: function (node) {
                     var isDir = FS.isDir(node.mode);
-                    var size = isDir ? 4096 : (node.fileSize || 0);
+                    var isLink = FS.isLink(node.mode);
+                    var size = isDir ? 4096 : (isLink ? ((node.link || '').length) : (node.fileSize || 0));
                     var ts = new Date(node.timestamp);
 
                     return {
@@ -149,6 +163,20 @@
                 mknod: function (parent, name, mode, dev) {
                     var childUrl = flavor_fs.joinUrl(parent.realUrl, name);
                     return flavor_fs.createNode(parent, name, mode, dev, childUrl, true);
+                },
+
+                symlink: function (parent, newname, oldpath) {
+                    var childUrl = flavor_fs.joinUrl(parent.realUrl, newname);
+                    var node = flavor_fs.createNode(parent, newname, 511 | 40960, 0, childUrl);
+                    node.link = oldpath;
+                    return node;
+                },
+
+                readlink: function (node) {
+                    if (!FS.isLink(node.mode)) {
+                        throw new FS.ErrnoError(28);
+                    }
+                    return node.link;
                 }
             },
 
@@ -205,6 +233,7 @@
         var mountpoint = typeof wx !== "undefined" ? 'StreamingAssets' : 'vfs_streamingassets';
         FS.mkdir(mountpoint);
         FS.mount(flavor_fs, {}, mountpoint);
-    })
+        FS.symlink(`../archive_dependencies.bin`, `${mountpoint}/ContentArchives/archive_dependencies.bin`);
+    });
 }
 )();
