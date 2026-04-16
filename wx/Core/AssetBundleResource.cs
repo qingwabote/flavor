@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using WeChatWASM;
@@ -15,7 +16,7 @@ namespace Flavor
 
         public void Start(ProvideHandle provideHandle)
         {
-            var path = $"{provideHandle.ResourceManager.TransformInternalId(provideHandle.Location)}.txt";
+            var path = provideHandle.Location.InternalId.Replace(".bundle", $"{Path.DirectorySeparatorChar}bundle.txt");
             Debug.Log($"[{typeof(AssetBundleResource).FullName}] Start {path}");
             var fs = WX.GetFileSystemManager();
             fs.ReadFile(new()
@@ -23,7 +24,7 @@ namespace Flavor
                 filePath = path,
                 fail = (e) =>
                 {
-                    provideHandle.Complete<AssetBundleResource>(null, status: false, new($"[{typeof(AssetBundleResource).FullName}] {e.errMsg}"));
+                    provideHandle.Complete<AssetBundleResource>(null, status: false, new($"[{typeof(AssetBundleResource).FullName} Start] [{typeof(WXFileSystemManager).FullName} ReadFile {path}] {e.errMsg}"));
                 },
                 success = (res) =>
                 {

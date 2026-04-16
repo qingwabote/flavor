@@ -2,8 +2,8 @@
     "name": "Flavor.Core",
     "rootNamespace": "",
     "references": [
-        "GUID:84651a3751eca9349aac36a66bba901b",
-        "GUID:f14d95499ba8b95419a9214fe2324055"
+        "Unity.ResourceManager",
+        "Flavor.Core.Impl"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -2,7 +2,7 @@
     "name": "Flavor",
     "rootNamespace": "",
     "references": [
-        "GUID:c5645d7be1bb5f347b6e4a58d4b7323d"
+        "Flavor.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

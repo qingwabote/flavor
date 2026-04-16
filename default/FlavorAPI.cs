@@ -1,6 +1,6 @@
 namespace Flavor
 {
-    public class FlavorAPI
+    public class FlavorAPI : BaseAPI
     {
         public const bool ShareAvailable = false;
 
