@@ -1,19 +1,24 @@
 (function () {
     Module['flavor_fs_op'] = Module['flavor_fs_op'] || {
         stat(path) {
+            if (path == 'StreamingAssets/ContentArchives' ||
+                path == 'StreamingAssets/EntityScenes'
+            ) {
+                return 0x4000
+            }
             var xhr = new XMLHttpRequest();
             xhr.open('HEAD', path, false);
             try {
                 xhr.send(null);
             } catch (e) {
-                return false;
+                return 0;
             }
 
             if (!((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0)) {
-                return false;
+                return 0;
             }
 
-            return true
+            return 0x8000
         },
         read(path) {
             var xhr = new XMLHttpRequest();
@@ -105,18 +110,6 @@
                 return base.replace(/\/$/, '') + '/' + name.replace(/^\//, '');
             },
 
-            // 尝试把 path 当作“目录”处理。
-            // 纯 HTTP 下其实没有可靠目录 stat，这里只把根节点当目录。
-            canTreatAsDir: function (parent, name, url) {
-                if (!parent)
-                    return true;
-                if (parent === FS.root)
-                    return true;
-                if (name === 'EntityScenes' || name === 'ContentArchives' || name === 'aa')
-                    return true;
-                return false;
-            },
-
             node_ops: {
                 getattr: function (node) {
                     var isDir = FS.isDir(node.mode);
@@ -145,19 +138,11 @@
 
                 lookup: function (parent, name) {
                     var childUrl = flavor_fs.joinUrl(parent.realUrl, name);
-
-                    // 对固定已知目录名，直接当目录节点建立
-                    if (flavor_fs.canTreatAsDir(parent, name, childUrl)) {
-                        return flavor_fs.createNode(parent, name, 16384 | 511, 0, childUrl);
-                    }
-
-                    // 否则按文件探测
-                    var exist = Module['flavor_fs_op'].stat(childUrl);
-                    if (!exist) {
+                    var mode = Module['flavor_fs_op'].stat(childUrl);
+                    if (mode == 0) {
                         throw new FS.ErrnoError(44);
                     }
-
-                    return flavor_fs.createNode(parent, name, 32768 | 511, 0, childUrl);
+                    return flavor_fs.createNode(parent, name, mode | 511, 0, childUrl);
                 },
 
                 mknod: function (parent, name, mode, dev) {
@@ -233,6 +218,7 @@
         var mountpoint = typeof wx !== "undefined" ? 'StreamingAssets' : 'vfs_streamingassets';
         FS.mkdir(mountpoint);
         FS.mount(flavor_fs, {}, mountpoint);
+        try { FS.mkdir(`${mountpoint}/ContentArchives`); } catch (e) { }
         FS.symlink(`../archive_dependencies.bin`, `${mountpoint}/ContentArchives/archive_dependencies.bin`);
     });
 }
