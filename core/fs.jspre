@@ -157,6 +157,11 @@
                     return node;
                 },
 
+                unlink: function (parent, name) {
+                    delete parent.contents[name];
+                    parent.timestamp = Date.now()
+                },
+
                 readlink: function (node) {
                     if (!FS.isLink(node.mode)) {
                         throw new FS.ErrnoError(28);
@@ -218,8 +223,6 @@
         var mountpoint = typeof wx !== "undefined" ? 'StreamingAssets' : 'vfs_streamingassets';
         FS.mkdir(mountpoint);
         FS.mount(flavor_fs, {}, mountpoint);
-        try { FS.mkdir(`${mountpoint}/ContentArchives`); } catch (e) { }
-        FS.symlink(`../archive_dependencies.bin`, `${mountpoint}/ContentArchives/archive_dependencies.bin`);
     });
 }
 )();

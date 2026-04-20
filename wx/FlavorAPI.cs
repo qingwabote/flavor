@@ -34,6 +34,11 @@ namespace Flavor
 
         public static void ReportEvent(string key, int type, int dim = 0)
         {
+            if (!Minigame())
+            {
+                return;
+            }
+
             var e = ReportEvents.Instance.Get(key, type);
             WX.ReportUserBehaviorBranchAnalytics(new()
             {
