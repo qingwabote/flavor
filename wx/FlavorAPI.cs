@@ -48,6 +48,11 @@ namespace Flavor
             });
         }
 
+        public static void ReportAwake()
+        {
+            WX.ReportScene(new() { sceneId = 7 });
+        }
+
         private static WXPageManager s_PageManager;
 
         public static void OpenHub(string link)

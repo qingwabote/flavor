@@ -12,6 +12,8 @@ namespace Flavor
 
         public static void ReportEvent(string key, int type, int dim = 0) { }
 
+        public static void ReportAwake() { }
+
         public static void OpenHub(string v) { }
     }
 }
