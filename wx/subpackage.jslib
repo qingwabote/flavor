@@ -1,6 +1,10 @@
 var lib = {
   $flavor_loadSubpackageCallback: null,
 
+  flavor_registerLoadSubpackageCallback: function (callback) {
+    flavor_loadSubpackageCallback = callback;
+  },
+
   flavor_loadSubpackage: function (handleId, namePtr) {
     function emit(errMsg) {
       var size = lengthBytesUTF8(errMsg) + 1;
@@ -26,8 +30,8 @@ var lib = {
     });
   },
 
-  flavor_registerLoadSubpackageCallback: function (callback) {
-    flavor_loadSubpackageCallback = callback;
+  flavor_preDownloadSubpackage: function (namePtr) {
+    wx.preDownloadSubpackage({ name: UTF8ToString(namePtr) });
   },
 };
 

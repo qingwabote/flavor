@@ -58,9 +58,6 @@ namespace Flavor
 
         private delegate void LoadSubpackageCallback(int handleId, System.IntPtr errMsgPtr);
 
-        [System.Runtime.InteropServices.DllImport("__Internal", EntryPoint = "flavor_loadSubpackage")]
-        private static extern void LoadSubpackage(int handleId, string name);
-
         [System.Runtime.InteropServices.DllImport("__Internal", EntryPoint = "flavor_registerLoadSubpackageCallback")]
         private static extern void RegisterLoadSubpackageCallback(LoadSubpackageCallback callback);
 
@@ -74,6 +71,9 @@ namespace Flavor
             task.TrySetResult(System.Runtime.InteropServices.Marshal.PtrToStringUTF8(errMsgPtr));
         }
 
+        [System.Runtime.InteropServices.DllImport("__Internal", EntryPoint = "flavor_loadSubpackage")]
+        private static extern void LoadSubpackage(int handleId, string name);
+
         public static Task<string> LoadSubpackage(string name)
         {
             var handleId = ++s_LoadSubpackageHandleId;
@@ -83,6 +83,9 @@ namespace Flavor
             LoadSubpackage(handleId, name);
             return handle.Task;
         }
+
+        [System.Runtime.InteropServices.DllImport("__Internal", EntryPoint = "flavor_preDownloadSubpackage")]
+        public static extern void PreDownloadSubpackage(string name);
 #else
         public static bool Minigame() { return false; }
 
@@ -93,6 +96,8 @@ namespace Flavor
         public static Task<bool> ShowModal(string title, string content, bool showCancel) { return Task.FromResult(true); }
 
         public static Task<string> LoadSubpackage(string name) { return Task.FromResult(string.Empty); }
+
+        public static void PreDownloadSubpackage(string name) { }
 #endif
     }
 }
