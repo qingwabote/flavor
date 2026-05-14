@@ -1,6 +1,10 @@
 var lib = {
   $flavor_loadSubpackageCallback: null,
 
+  flavor_registerLoadSubpackageCallback: function (callback) {
+    flavor_loadSubpackageCallback = callback;
+  },
+
   flavor_loadSubpackage: function (handleId, namePtr) {
     var errMsg = "";
     var size = lengthBytesUTF8(errMsg) + 1;
@@ -10,9 +14,7 @@ var lib = {
     _free(errMsgPtr);
   },
 
-  flavor_registerLoadSubpackageCallback: function (callback) {
-    flavor_loadSubpackageCallback = callback;
-  },
+  flavor_preDownloadSubpackage: function (namePtr) { },
 };
 
 autoAddDeps(lib, "$flavor_loadSubpackageCallback");
