@@ -31,6 +31,10 @@ var lib = {
   },
 
   flavor_preDownloadSubpackage: function (namePtr) {
+    if (typeof wx == "undefined") {
+      return;
+    }
+
     wx.preDownloadSubpackage({ name: UTF8ToString(namePtr) });
   },
 };
